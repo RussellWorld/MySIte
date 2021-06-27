@@ -15,5 +15,6 @@
     <string name="website_home">https://animevost.org/</string>
     <string name="website_ongoing">https://animevost.org/ongoing/</string>
     <string name="website_preview">https://animevost.org/preview/</string>
+    <string name="website_feedback">https://animevost.org/index.php?do=feedback</string>
     <string name="menu_opgoing">Опгоинг</string>
 </resources>

@@ -10,21 +10,23 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import pollingapp.rassellworld.mysite.databinding.ActivityMainBinding
 
 var networkAviable = false
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("ResourceAsColor")
@@ -37,6 +39,17 @@ class MainActivity : AppCompatActivity() {
 
         val mWebView = binding.appBarMain.content.webView
         var url = getString(R.string.website_home)
+        var urlFeedback = getString(R.string.website_feedback)
+
+        val toogle = ActionBarDrawerToggle(
+            this, binding.drawerLayout, binding.appBarMain.toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        binding.drawerLayout.addDrawerListener(toogle)
+        toogle.syncState()
+
+        binding.navView.setNavigationItemSelectedListener(this)
+
         binding.appBarMain.content.webView.webViewClient = WebViewClient()
         binding.appBarMain.content.webView.loadUrl(url)
 
@@ -54,12 +67,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         loadWebSite(mWebView, url, applicationContext)
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        binding.appBarMain.fab.setOnClickListener {
+            loadWebSite(mWebView, urlFeedback, applicationContext)
         }
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
+
 
     }
 
@@ -182,6 +193,29 @@ class MainActivity : AppCompatActivity() {
             super.onPageFinished(view, url)
             onLoadComplete()
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_home -> {
+                val url = getString(R.string.website_home)
+                loadWebSite(binding.appBarMain.content.webView, url, applicationContext)
+            }
+            R.id.nav_ongoing -> {
+                val url = getString(R.string.website_ongoing)
+                loadWebSite(binding.appBarMain.content.webView, url, applicationContext)
+            }
+            R.id.nav_preview -> {
+                val url = getString(R.string.website_preview)
+                loadWebSite(binding.appBarMain.content.webView, url, applicationContext)
+            }
+            R.id.fab -> {
+                val url = getString(R.string.website_feedback)
+                loadWebSite(binding.appBarMain.content.webView, url, applicationContext)
+            }
+        }
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
 
